@@ -11,7 +11,7 @@ from inimigo import Inimigo
 def Menu():
     sleep(.5)
     menu = Telas()
-    botoesMenu = menu.addBotao(50, 'Jogar.png', 'dificuldade.png', 'Rank.png', 'sair.png')
+    botoesMenu = menu.addBotao(50, 'imagens/Jogar.png', 'imagens/dificuldade.png', 'imagens/Rank.png', 'imagens/sair.png')
 
 
     while True:
@@ -40,7 +40,7 @@ def Menu():
 def Dificuldade():
     sleep(.5)
     dificuldade = Telas()
-    botoesDif = dificuldade.addBotao(50, 'facil.png', 'medio.png', 'dificil.png')
+    botoesDif = dificuldade.addBotao(50, 'imagens/facil.png', 'imagens/medio.png', 'imagens/dificil.png')
 
     while True:
         dificuldade.fundo.draw()
@@ -52,7 +52,7 @@ def Dificuldade():
             
 
         if dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[0]): #Facil foi pressionado
-            print("facil")
+            pass
         elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[1]):
             pass
         elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[2]):
@@ -74,8 +74,11 @@ def Jogo():
     temporizador = 0
     hit = 0
     velox = 0.3
+    y_descer=50
     
+  
     while True:
+
         temporizador += 1
         jogo.fundo.draw()
 
@@ -97,7 +100,9 @@ def Jogo():
                 tiro.draw()
 
         
-        velox ,hit = inimigo.mover_inimigo(velox, hit)
+        velox ,hit, y_descer = inimigo.mover_inimigo(velox, hit,y_descer,jogo.janela.height,jogador.nave.height)
+        if y_descer == 'menu':
+            Menu()
 
         jogador.nave.draw()
         jogo.janela.update()  

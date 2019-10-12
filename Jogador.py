@@ -5,7 +5,7 @@ from PPlay.collision import *
 
 class Jogador():
     def __init__(self):
-        self.nave = Sprite("nave.png")
+        self.nave = Sprite("imagens/nave.png")
         self.vet_tiro= []
 
     def nave_movimentar(self,janela_largura):
@@ -17,7 +17,7 @@ class Jogador():
             self.nave.x=0
     
     def atirar(self):
-        tiro = Sprite("tiro.png")
+        tiro = Sprite("imagens/tiro.png")
         tiro.set_position(self.nave.x+27, self.nave.y-self.nave.height+10)
         self.vet_tiro.append(tiro)
         

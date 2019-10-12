@@ -12,7 +12,7 @@ class Telas():
 
         self.mouse = Window.get_mouse()
         self.teclado = Window.get_keyboard()
-        self.fundo = GameImage("fundo.png")
+        self.fundo = GameImage("imagens/fundo.png")
     
     def addBotao(self, posInicialX, *nomeSprites):
         lista = list()

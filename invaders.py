@@ -111,14 +111,18 @@ def Jogo():
     segundo = fps = fps2 = 0
 
     existe_inimigo = 0
-    temporizador = 0
+    temporizador = temp = 0
     hit = 0
     velox = 0.3
     y_descer=50
     vidas=5
+    linha=2
+    coluna=4
+    cont=0
 
     while True:       
         temporizador += 1
+        temp +=1
 
         jogo.fundo.draw()
 
@@ -136,7 +140,7 @@ def Jogo():
         jogador.saude(vidas)#desenha a vida do jogador na tela
 
         if not existe_inimigo:#criando inimigos caso eles nao existam
-            existe_inimigo = inimigo.criar_inimigo()
+            existe_inimigo = inimigo.criar_inimigo(linha,coluna)
       
 
         jogador.nave_movimentar(jogo.janela.width) #movimentar a nave
@@ -145,8 +149,8 @@ def Jogo():
             jogador.atirar()
             temporizador = 0
     
-        if temporizador > 200: #tiro do inimigo
-            temporizador = 0
+        if temp > 800: #tiro do inimigo
+            temp = 0
             inimigo.atirar()
 
 
@@ -154,9 +158,16 @@ def Jogo():
         vidas = inimigo.movimentarTiro_e_TestarColisao(jogador.nave,vidas,jogo.janela)#movimenta o tiro e testa colisão com a nave
 
         
-        velox ,hit, y_descer = inimigo.mover_inimigo(velox, hit,y_descer,jogo.janela.height,jogador.nave.height)#faz os inimigos se moverem
+        velox ,hit, y_descer = inimigo.mover_inimigo(velox, hit,y_descer,jogo.janela.height,jogador.nave.height,cont)#faz os inimigos se moverem
         
-        if y_descer == 'menu' or len(inimigo.matriz[0]) == 0 or vidas == 0:#tenho que mudar
+        if len(inimigo.matriz[0]) == 0:
+            existe_inimigo = 0
+            y_descer=0
+            linha += 1
+            cont += 10
+            
+
+        if y_descer == 'menu' or vidas == 0:#tenho que mudar
 
             Menu()
     

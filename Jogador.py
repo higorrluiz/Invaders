@@ -33,7 +33,7 @@ class Jogador():
             x += 30
 
     def movimentarTiro_e_TestarColisao(self,matriz_inimigo):
-        for tiro in self.vet_tiro:#########################
+        for tiro in self.vet_tiro:
             tiro.y -= 0.5
             if tiro.y < 0:
                 self.vet_tiro.remove(tiro)
@@ -42,7 +42,10 @@ class Jogador():
             for i in range(len(matriz_inimigo)):
                 for alen in matriz_inimigo[i]:
                     if (tiro.collided(alen)):
-                        self.vet_tiro.remove(tiro)
+                        try:
+                            self.vet_tiro.remove(tiro)
+                        except:
+                            pass
                         matriz_inimigo[i].remove(alen)       
 
 

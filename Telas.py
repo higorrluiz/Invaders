@@ -7,12 +7,12 @@ from PPlay.collision import *
 
 class Telas():
     def __init__(self):
-        self.janela = Window(1000,500)
+        self.janela = Window(600,670)
         self.janela.set_title("Invaders")
 
         self.mouse = Window.get_mouse()
         self.teclado = Window.get_keyboard()
-        self.fundo = GameImage("imagens/fundo.png")
+        self.fundo = GameImage("imagens/fundo.jpg")
     
     def addBotao(self, posInicialX, *nomeSprites):
         lista = list()

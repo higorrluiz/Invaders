@@ -2,6 +2,7 @@ from PPlay.window import*
 from PPlay.gameimage import *
 from PPlay.sprite import *
 from Telas import Telas
+import random
 
 jogo=Telas()
 
@@ -9,6 +10,7 @@ class Inimigo():
     def __init__(self):
         self.matriz=[]
         self.lista=[]
+        self.vet_tiro = [] 
     
     def criar_inimigo(self):
         #colocando os inimigos na matriz
@@ -31,8 +33,8 @@ class Inimigo():
         return 1
 
     def descer_inimigo(self,y,janela,nave):
-        for i in range(2):
-            for j in range(4):
+        for i in range(len(self.matriz)):
+            for j in range(len(self.matriz[i])):
                 if self.matriz[i][j].y+50 >= janela-nave:
                     return 'menu'
                 self.matriz[i][j].y = y
@@ -44,8 +46,8 @@ class Inimigo():
 
     def mover_inimigo(self,velox, hit,y_descer,janela,nave):
         #fazendo eles se moverem de fato (apenas pros lados)
-        for i in range(2):
-            for j in range(4):
+        for i in range(len(self.matriz)):
+            for j in range(len(self.matriz[i])):
                 self.matriz[i][j].x += velox
                 self.matriz[i][j].draw()
                 
@@ -61,7 +63,17 @@ class Inimigo():
                     hit = 0
                     velox = velox * -1
                     y_descer = self.descer_inimigo(y_descer,janela,nave)
-                    
-
-
         return velox, hit, y_descer
+        
+    def atirar(self):
+        if len(self.matriz[1]) == 0:
+            alen = random.choice(self.matriz[0])
+        else:
+            alen = random.choice(self.matriz[random.randint(0,1)])
+        
+        tiro = Sprite("imagens/tiro_inimigo.png")
+        tiro.set_position(alen.x, alen.y+alen.height-10)
+        self.vet_tiro.append(tiro)
+
+
+        

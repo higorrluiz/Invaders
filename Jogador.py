@@ -7,6 +7,7 @@ class Jogador():
     def __init__(self):
         self.nave = Sprite("imagens/nave.png")
         self.vet_tiro= []
+        self.vidas = []
 
     def nave_movimentar(self,janela_largura):
         self.nave.move_key_x(1)
@@ -20,8 +21,17 @@ class Jogador():
         tiro = Sprite("imagens/tiro.png")
         tiro.set_position(self.nave.x+27, self.nave.y-self.nave.height+10)
         self.vet_tiro.append(tiro)
-        
-        #return 1
+
+    def saude(self,vidas):
+        x=0
+        y=0
+        for i in range(vidas):
+            self.vidas.append(GameImage("imagens/coração.png"))
+        for i in range(vidas):
+            self.vidas[i].set_position(x,y)
+            self.vidas[i].draw()
+            x += 30       
+
 
 
 

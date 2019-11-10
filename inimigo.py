@@ -76,4 +76,16 @@ class Inimigo():
         self.vet_tiro.append(tiro)
 
 
-        
+    def movimentarTiro_e_TestarColisao(self,nave,vidas,janela):
+        for tiro in self.vet_tiro:#########################
+            tiro.y += 0.2
+            if tiro.y > janela.height- nave.height :
+                self.vet_tiro.remove(tiro)
+            else:
+                tiro.draw()
+
+            if (tiro.collided(nave)):
+                self.vet_tiro.remove(tiro)
+                vidas -= 1
+
+        return vidas

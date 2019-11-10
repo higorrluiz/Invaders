@@ -8,10 +8,6 @@ from Jogador import Jogador
 from inimigo import Inimigo
 from auxiliar import *
 
-temp = frame = frames = 0
-
-pts = dec = 0
-
 def Menu():
     sleep(.5)
     menu = Telas()
@@ -45,7 +41,7 @@ def Menu():
         else:        
             menu.janela.update()
 
-def Ranking():
+def Ranking(): #tela que mostra os nomes dos jogadores em ordem do melhor para o pior
     sleep(.5)
     ranking = Telas()
 
@@ -63,10 +59,10 @@ def Ranking():
             i.draw()
         
         #Sair
-        if ranking.mouse.is_button_pressed(1) and ranking.mouse.is_over_object(botoesMenu[0]):
+        if ranking.mouse.is_button_pressed(1) and ranking.mouse.is_over_object(botoesMenu[1]):
             ranking.janela.close()
         #jogar
-        if ranking.mouse.is_button_pressed(1) and ranking.mouse.is_over_object(botoesMenu[1]):  
+        if ranking.mouse.is_button_pressed(1) and ranking.mouse.is_over_object(botoesMenu[0]):  
             Jogo() 
 
 
@@ -100,19 +96,18 @@ def Dificuldade():
 
 
 
-def Jogo():
- 
 
+
+
+def Jogo():
     jogo = Telas()
     jogador = Jogador()
     inimigo = Inimigo()
     
-
     jogador.nave.set_position(jogo.janela.width/2-jogador.nave.width,jogo.janela.height-jogador.nave.height)
 
     teclado = Window.get_keyboard()
 
-   
     segundo = fps = fps2 = 0
 
     existe_inimigo = 0
@@ -121,12 +116,13 @@ def Jogo():
     velox = 0.3
     y_descer=50
     vidas=5
-    score=0
- 
 
     while True:       
         temporizador += 1
+
         jogo.fundo.draw()
+
+        #desenhando fps
         tempo = jogo.janela.delta_time()
         segundo+=tempo
         fps+=1
@@ -134,65 +130,37 @@ def Jogo():
             fps2=fps
             fps=0
             segundo=0
-
-        score+=tempo
-            
         jogo.janela.draw_text(str(fps2), 0, jogo.janela.height - 50, 50, (178, 102, 255), "Calibri")
-                    
         
     
         jogador.saude(vidas)#desenha a vida do jogador na tela
 
-        if not existe_inimigo:
+        if not existe_inimigo:#criando inimigos caso eles nao existam
             existe_inimigo = inimigo.criar_inimigo()
       
 
-        jogador.nave_movimentar(jogo.janela.width) #classe para movimentar a nave
+        jogador.nave_movimentar(jogo.janela.width) #movimentar a nave
 
         if(teclado.key_pressed("space")) and temporizador > 200:  # Atirar
             jogador.atirar()
             temporizador = 0
     
-        if temporizador > 200:
+        if temporizador > 200: #tiro do inimigo
             temporizador = 0
             inimigo.atirar()
 
 
-        for tiro in jogador.vet_tiro:#########################
-            tiro.y -= 0.5
-            if tiro.y < 0:
-                jogador.vet_tiro.remove(tiro)
-            else:
-                tiro.draw()
-            for i in range(len(inimigo.matriz)):
-                for alen in inimigo.matriz[i]:
-                    if (tiro.collided(alen)):
-                        jogador.vet_tiro.remove(tiro)
-                        inimigo.matriz[i].remove(alen)
-                        
-                        
-                        ################################
-        
-        for tiro in inimigo.vet_tiro:#########################
-            tiro.y += 0.2
-            if tiro.y > jogo.janela.height- jogador.nave.height :
-                inimigo.vet_tiro.remove(tiro)
-            else:
-                tiro.draw()
-
-            if (tiro.collided(jogador.nave)):
-                inimigo.vet_tiro.remove(tiro)
-                vidas -= 1
+        jogador.movimentarTiro_e_TestarColisao(inimigo.matriz)#movimenta o tiro e testa colisão com inimigo
+        vidas = inimigo.movimentarTiro_e_TestarColisao(jogador.nave,vidas,jogo.janela)#movimenta o tiro e testa colisão com a nave
 
         
-        velox ,hit, y_descer = inimigo.mover_inimigo(velox, hit,y_descer,jogo.janela.height,jogador.nave.height)
+        velox ,hit, y_descer = inimigo.mover_inimigo(velox, hit,y_descer,jogo.janela.height,jogador.nave.height)#faz os inimigos se moverem
         
-        if y_descer == 'menu' or len(inimigo.matriz[0]) == 0 or vidas == 0:
+        if y_descer == 'menu' or len(inimigo.matriz[0]) == 0 or vidas == 0:#tenho que mudar
 
             Menu()
     
-    
-        
+
         jogador.nave.draw()
         jogo.janela.update()  
 

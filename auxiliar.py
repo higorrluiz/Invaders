@@ -1,4 +1,4 @@
-def adicionar_jogador():
+def adicionar_jogador(score):
     nome=input("Digite seu nome: ")
     arquivo=open("ranking.txt","a")
     arquivo.write(nome + " " + str(int(score)) + "\n")
@@ -32,3 +32,6 @@ def contar_pessoas():
     lista = arquivo.readlines()
     arquivo.close()
     return lista
+
+
+

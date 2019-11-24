@@ -32,7 +32,7 @@ class Jogador():
             self.vidas[i].draw()
             x += 30
 
-    def movimentarTiro_e_TestarColisao(self,matriz_inimigo):
+    def movimentarTiro_e_TestarColisao(self,matriz_inimigo,score,boss):
         for tiro in self.vet_tiro:
             tiro.y -= 0.5
             if tiro.y < 0:
@@ -41,17 +41,21 @@ class Jogador():
                 tiro.draw()
             for i in range(len(matriz_inimigo)):
                 for alen in matriz_inimigo[i]:
-                    if (tiro.collided(alen)):
+                    if (tiro.collided(alen)): #se o tiro encostou no alien, eu removo o tiro da tela
                         try:
                             self.vet_tiro.remove(tiro)
                         except:
                             pass
-                        matriz_inimigo[i].remove(alen)       
+                        matriz_inimigo[i].remove(alen) 
+                        score+=1
 
+            if (tiro.collided(boss)): #se o tiro encostou no boss, eu removo o tiro da tela
+                try:
+                    self.vet_tiro.remove(tiro)
+                except:
+                    pass
+                boss.set_position(800,800)
+                score+=4
 
-
-
-
-
-
-    
+        return score      
+                        

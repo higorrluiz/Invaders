@@ -10,6 +10,7 @@ class Inimigo():
     def __init__(self):
         self.lista=[]
         self.vet_tiro = [] 
+        self.super_inimigo = Sprite("imagens/boss.png")
     
     def criar_inimigo(self,linha,coluna):
         self.matriz=[]
@@ -20,10 +21,10 @@ class Inimigo():
                 self.lista.append(Sprite("imagens/inimigo.png"))
             self.matriz.append(self.lista)
       #Posicionando os inimigos um em baixo do outro
-        y=0
-        x=10
+        y=30
+        x=0
         for i in range(linha):
-            x=10
+            x=0
             for j in range(coluna):
                 self.matriz[i][j].set_position(x,y)
                 self.matriz[i][j].draw()
@@ -32,38 +33,35 @@ class Inimigo():
             y += self.matriz[i][j].height + 10
         return 1
 
-    def descer_inimigo(self,y,janela,nave,cont):
-        for i in range(len(self.matriz)):
-            for j in range(len(self.matriz[i])):
-                if self.matriz[i][j].y+(50-cont) >= janela-nave:
-                    return 'menu'
-                self.matriz[i][j].y = y
-                self.matriz[i][j].draw()
-            y += 50 
-        return y
 
-
-
-    def mover_inimigo(self,velox, hit,y_descer,janela,nave,cont):
+    def mover_inimigo(self,velox, hit, janela,nave):
         #fazendo eles se moverem de fato (apenas pros lados)
         for i in range(len(self.matriz)):
             for j in range(len(self.matriz[i])):
                 self.matriz[i][j].x += velox
-                self.matriz[i][j].draw()
-                
-                #limitando movimento ao tamanho da tela e fazendo inimigos descerem sempre que tocarem nos estremos
-                if self.matriz[i][j].x >= jogo.janela.width - self.matriz[i][j].width and not hit:
+        
+        #limite dos inimigos na esquerda
+                if self.matriz[i][j].x <= 0:
                     hit = 1
                     velox = velox * -1
-                    y_descer = self.descer_inimigo(y_descer,janela,nave,cont)
-                    
+               
+        #limitando movimento ao tamanho da tela e fazendo inimigos descerem sempre que tocarem nos estremos
+                elif self.matriz[i][j].x >= jogo.janela.width - self.matriz[i][j].width:
+                    hit = 1
+                    velox = velox * -1         
+        
+        if hit:
+            for i in range(len(self.matriz)):
+                for j in range(len(self.matriz[i])):
+                    self.matriz[i][j].y+=40
+            hit = 0
+        
+        for i in range(len(self.matriz)):
+            for j in range(len(self.matriz[i])):
+                self.matriz[i][j].draw()
 
-                #limite dos inimigos na esquerda
-                elif self.matriz[i][j].x <= 0 and hit:
-                    hit = 0
-                    velox = velox * -1
-                    y_descer = self.descer_inimigo(y_descer,janela,nave,cont)
-        return velox, hit, y_descer
+
+        return velox, hit
         
     def atirar(self):
         if len(self.matriz[1]) == 0:
@@ -76,16 +74,38 @@ class Inimigo():
         self.vet_tiro.append(tiro)
 
 
-    def movimentarTiro_e_TestarColisao(self,nave,vidas,janela):
+    def movimentarTiro_e_TestarColisao(self,nave,vidas,janela,speed_tiro):
         for tiro in self.vet_tiro:
-            tiro.y += 0.2
+            tiro.y += speed_tiro
             if tiro.y > janela.height- nave.height :
                 self.vet_tiro.remove(tiro)
             else:
                 tiro.draw()
 
-            if (tiro.collided(nave)):
+            if (tiro.collided(nave)): #se o tiro encostou na nave eu tiro o tiro 
                 self.vet_tiro.remove(tiro)
                 vidas -= 1
 
         return vidas
+
+    def Criar_SuperInimigo(self, especial):
+        self.super_inimigo.set_position(0,50)
+        self.super_inimigo.draw()
+        especial = 1 
+        return especial
+    
+    def mover_SuperInimigo(self,velox2,janela):
+        
+        self.super_inimigo.x += velox2
+        if self.super_inimigo.x >= janela.width - self.super_inimigo.width:
+            velox2 = velox2 * -1     
+        elif self.super_inimigo.x <= 0:
+            velox2 = velox2 * -1
+
+      
+        
+        self.super_inimigo.draw()
+
+        return velox2
+
+        

@@ -9,8 +9,9 @@ from inimigo import Inimigo
 from auxiliar import *
 import random
 
-speed_tiro = 0.6
-speed_shoot = 500
+speed_tiro = 0.6 #velocidade no tiro
+speed_shoot = 500 #intervalo de tiro do inimigo
+velox = 0.5 #velocidade de movimento do inimigo
 
 def Menu():
     sleep(.5)
@@ -45,6 +46,17 @@ def Menu():
         else:        
             menu.janela.update()
 
+def game_over():
+    sleep(.5)
+    game_over = Telas()
+
+    game_over.fundo.draw()
+    game_over.janela.draw_text("Você perdeu!", game_over.janela.width/2-190, game_over.janela.height/2-200 , 80, (178, 102, 255), "Calibri")
+    game_over.janela.draw_text("Digite seu nome no terminal", 30, game_over.janela.height/2 , 60, (178, 102, 255), "Calibri")
+    game_over.janela.draw_text("para continuar a jogar", 60, game_over.janela.height/2 + 50 , 60, (178, 102, 255), "Calibri")
+
+    game_over.janela.update()
+        
 def Ranking(): #tela que mostra os nomes dos jogadores em ordem do melhor para o pior
     sleep(.5)
     ranking = Telas()
@@ -72,7 +84,7 @@ def Ranking(): #tela que mostra os nomes dos jogadores em ordem do melhor para o
         ranking.janela.update()
 
 def Dificuldade():
-    global speed_tiro, speed_shoot
+    global speed_tiro, speed_shoot, velox
     sleep(.5)
     dificuldade = Telas()
     botoesDif = dificuldade.addBotao(50, 'imagens/facil.png', 'imagens/medio.png', 'imagens/dificil.png')
@@ -88,20 +100,23 @@ def Dificuldade():
         if dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[0]): #Facil foi pressionado
             speed_tiro = 0.6
             speed_shoot = 500
+            velox = 0.5
             Jogo()
-        elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[1]):
+        elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[1]): #medio foi precionado
             speed_tiro = 0.8
             speed_shoot = 300
+            velox = 0.8
             Jogo()
-        elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[2]):
+        elif dificuldade.mouse.is_button_pressed(1) and dificuldade.mouse.is_over_object(botoesDif[2]):#dificil foi precionado
             speed_tiro = 1
             speed_shoot = 200
+            velox = 1
             Jogo()
         else:
             dificuldade.janela.update()
 
 def Jogo():
-    global speed_tiro, speed_shoot
+    global speed_tiro, speed_shoot,velox
     jogo = Telas()
     jogador = Jogador()
     inimigo = Inimigo()
@@ -111,17 +126,20 @@ def Jogo():
     teclado = Window.get_keyboard()
 
     segundo = fps = fps2 = 0
+    segundo2=0
     
 
     existe_inimigo = 0
-    especial = 0
+
+    tem_superinimigo=0
 
     temporizador = temp = 0
     hit = 0
-    velox = 0.3
-    y_descer=50
+    
+    
+    perdeu = 0
 
-    velox2=0.3
+    velox2=1
 
     score = 0
     
@@ -145,6 +163,7 @@ def Jogo():
             fps2=fps
             fps=0
             segundo=0
+            segundo2+=1
             
 
         jogo.janela.draw_text(str(fps2), 0, jogo.janela.height - 50, 50, (178, 102, 255), "Calibri")
@@ -167,30 +186,34 @@ def Jogo():
             inimigo.atirar()
 
         
-        score = jogador.movimentarTiro_e_TestarColisao(inimigo.matriz,score,inimigo.super_inimigo)#movimenta o tiro e testa colisão com inimigo
+        score, tem_superinimigo, segundo2 = jogador.movimentarTiro_e_TestarColisao(inimigo.matriz,score,inimigo.super_inimigo,tem_superinimigo,segundo2)#movimenta o tiro e testa colisão com inimigo
         vidas = inimigo.movimentarTiro_e_TestarColisao(jogador.nave,vidas,jogo.janela,speed_tiro)#movimenta o tiro e testa colisão com a nave
 
         
-        velox ,hit= inimigo.mover_inimigo(velox, hit, jogo.janela.height,jogador.nave)#faz os inimigos se moverem
+        perdeu,velox ,hit= inimigo.mover_inimigo(velox, hit, jogo.janela.height,jogador.nave)#faz os inimigos se moverem
         
-        if especial == 0:
-            if random.choice(inimigo.matriz[0]).y > 160:
-                especial = inimigo.Criar_SuperInimigo(especial)
+        if segundo2 > 19 and not tem_superinimigo: #cria super inimigo de 20 em 20 segundos
+            tem_superinimigo=inimigo.Criar_SuperInimigo(tem_superinimigo)
+            segundo2=0
+    
         
-        if especial and inimigo.super_inimigo.x<800:
+        if tem_superinimigo:
             velox2 = inimigo.mover_SuperInimigo(velox2,jogo.janela)
         
         
         if len(inimigo.matriz[0]) == 0:
             existe_inimigo = 0
-            y_descer=0
             linha += 1
             cont += 10
             
+        print(segundo2)
 
-        if y_descer == 'menu' or vidas == 0:#tenho que mudar
+        if vidas == 0 or perdeu == 1:
+            game_over()
+            perdeu = 0
             adicionar_jogador(score)
             Menu()
+           
     
 
         jogador.nave.draw()

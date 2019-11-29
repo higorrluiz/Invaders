@@ -21,7 +21,7 @@ class Inimigo():
                 self.lista.append(Sprite("imagens/inimigo.png"))
             self.matriz.append(self.lista)
       #Posicionando os inimigos um em baixo do outro
-        y=30
+        y=90
         x=0
         for i in range(linha):
             x=0
@@ -54,14 +54,17 @@ class Inimigo():
             for i in range(len(self.matriz)):
                 for j in range(len(self.matriz[i])):
                     self.matriz[i][j].y+=40
+                    if self.matriz[i][j].y >= janela - nave.height -30:
+                        perdeu = 1
+                        return perdeu ,velox, hit
             hit = 0
         
         for i in range(len(self.matriz)):
             for j in range(len(self.matriz[i])):
                 self.matriz[i][j].draw()
 
-
-        return velox, hit
+        perdeu = 0
+        return perdeu ,velox, hit
         
     def atirar(self):
         if len(self.matriz[1]) == 0:
@@ -88,11 +91,12 @@ class Inimigo():
 
         return vidas
 
-    def Criar_SuperInimigo(self, especial):
-        self.super_inimigo.set_position(0,50)
+    def Criar_SuperInimigo(self,tem_superinimigo):
+        self.super_inimigo.set_position(0,30)
         self.super_inimigo.draw()
-        especial = 1 
-        return especial
+        tem_superinimigo = 1
+        return tem_superinimigo
+        
     
     def mover_SuperInimigo(self,velox2,janela):
         
@@ -100,10 +104,7 @@ class Inimigo():
         if self.super_inimigo.x >= janela.width - self.super_inimigo.width:
             velox2 = velox2 * -1     
         elif self.super_inimigo.x <= 0:
-            velox2 = velox2 * -1
-
-      
-        
+            velox2 = velox2 * -1  
         self.super_inimigo.draw()
 
         return velox2

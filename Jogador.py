@@ -2,6 +2,7 @@ from PPlay.window import*
 from PPlay.gameimage import *
 from PPlay.sprite import *
 from PPlay.collision import *
+import random
 
 class Jogador():
     def __init__(self):
@@ -32,9 +33,15 @@ class Jogador():
             self.vidas[i].draw()
             x += 30
 
-    def movimentarTiro_e_TestarColisao(self,matriz_inimigo,score,boss):
+    def movimentarTiro_e_TestarColisao(self,matriz_inimigo,score,boss,tem_superinimigo,segundos2):
+        velox=0.5
         for tiro in self.vet_tiro:
-            tiro.y -= 0.5
+            try:
+                if tiro.y<= matriz_inimigo[1][random.randint(0,4)].y:
+                    velox= 3
+            except:
+                pass    
+            tiro.y -= velox
             if tiro.y < 0:
                 self.vet_tiro.remove(tiro)
             else:
@@ -54,8 +61,10 @@ class Jogador():
                     self.vet_tiro.remove(tiro)
                 except:
                     pass
+                tem_superinimigo=0
                 boss.set_position(800,800)
                 score+=4
+                segundos2 = 0
 
-        return score      
+        return score, tem_superinimigo,segundos2   
                         
